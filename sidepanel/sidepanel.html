@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CloudLabs AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="sidepanel.css"/>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="6" fill="url(#lg)"/>
+        <path d="M7 11.5L10 14.5L15 8.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="22" y2="22"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+    </div>
+    <div class="hdr-text">
+      <span class="hdr-name">CloudLabs AI</span>
+      <span class="hdr-sub">Spektra Systems</span>
+    </div>
+    <div class="hdr-right">
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusTxt">Idle</span>
+      </div>
+      <button class="icon-btn" id="btnConfig" title="Config">⚙️</button>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="guide">🎯 Guide</button>
+    <button class="tab"        data-tab="chat" >💬 Ask AI</button>
+    <button class="tab"        data-tab="config">⚙️ Config</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       GUIDE TAB — goal + live AI guidance
+  ═══════════════════════════════════════ -->
+  <div class="panel active" id="tab-guide">
+
+    <!-- Goal input (shown when not scanning) -->
+    <div id="goalSection">
+      <p class="lbl">What do you want to do?</p>
+      <textarea id="goalInput" class="goal-input"
+        placeholder="Describe your goal in plain English:&#10;&#10;• Create a Virtual Machine in Azure Portal&#10;• Set up a Storage Account with LRS redundancy&#10;• Create a Resource Group in East US&#10;&#10;The AI will scan the page every few seconds and guide you step by step."></textarea>
+      <button class="btn btn-start" id="btnStart">🚀 Start AI Guide</button>
+    </div>
+
+    <!-- Live guidance (shown while scanning) -->
+    <div id="liveSection" class="hidden">
+
+      <!-- Goal display -->
+      <div class="goal-banner" id="goalBanner">
+        <span class="goal-icon">🎯</span>
+        <span id="goalDisplay"></span>
+        <button class="goal-stop-btn" id="btnStop" title="Stop">✕</button>
+      </div>
+
+      <!-- Scan status -->
+      <div class="scan-bar" id="scanBar">
+        <div class="scan-bar-inner" id="scanBarInner">
+          <div class="scan-dot" id="scanDot"></div>
+          <span id="scanBarTxt">Scanning page…</span>
+        </div>
+        <button class="rescan-btn" id="btnRescan" title="Scan now">↺</button>
+      </div>
+
+      <!-- Issue/error banner (hidden when no issues) -->
+      <div class="issue-banner hidden" id="issueBanner">
+        <div class="issue-title">⚠️ Problem detected</div>
+        <div class="issue-body" id="issueBody"></div>
+        <div class="issue-fix hidden" id="issueFix"></div>
+      </div>
+
+      <!-- Guidance card -->
+      <div class="guidance-card" id="guidanceCard">
+        <div class="guidance-chip" id="guidanceChip">👆 Action needed</div>
+        <p class="guidance-text" id="guidanceTxt">Analysing the page…</p>
+        <p class="guidance-hint" id="guidanceHint"></p>
+      </div>
+
+      <!-- Nav controls (manual prev/next) -->
+      <div class="nav-row">
+        <button class="nav-btn" id="btnPrev">← Previous</button>
+        <button class="done-btn" id="btnDone">✅ Done, next</button>
+        <button class="nav-btn" id="btnNext">Next →</button>
+      </div>
+
+      <!-- Action history -->
+      <details class="history-details" id="historyDetails">
+        <summary class="history-summary">
+          📋 History <span class="hist-count" id="histCount">0 actions</span>
+        </summary>
+        <div class="history-list" id="historyList"></div>
+        <button class="btn-ghost-sm" id="btnClearHistory">Clear</button>
+      </details>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CHAT TAB — ask AI questions
+  ═══════════════════════════════════════ -->
+  <div class="panel" id="tab-chat">
+    <p class="chat-intro">Ask anything about the current step, the Azure portal, or what to do next.</p>
+    <div class="chat-hist" id="chatHist">
+      <div class="bubble assistant"><div class="bubble-body">👋 Ask me anything about what you're doing on this page. I have live context about the page and your current step.</div></div>
+    </div>
+    <div class="chat-row">
+      <textarea class="chat-inp" id="chatInp" placeholder="e.g. Why is the Create button greyed out?&#10;(Enter to send)"></textarea>
+      <button class="chat-send" id="chatSend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CONFIG TAB
+  ═══════════════════════════════════════ -->
+  <div class="panel" id="tab-config">
+
+    <p class="lbl">Azure OpenAI</p>
+    <div class="cfg-group">
+      <div class="cfg-row">
+        <label>Endpoint URL</label>
+        <input type="url" id="cfgEndpoint" placeholder="https://…openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01"/>
+      </div>
+      <div class="cfg-row">
+        <label>API Key</label>
+        <input type="password" id="cfgKey" placeholder="Any format"/>
+      </div>
+      <div class="cfg-row two">
+        <div>
+          <label>Auth header</label>
+          <input type="text" id="cfgAuth" value="api-key"/>
+        </div>
+        <div>
+          <label>Model</label>
+          <input type="text" id="cfgModel" value="gpt-4o"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="cfg-note">
+      💡 Paste your Azure OpenAI endpoint and key. The extension uses GPT-4o vision to analyse screenshots of the page every few seconds.<br><br>
+      <strong>Supports any endpoint:</strong><br>
+      • Azure Chat Completions API<br>
+      • Azure Responses API<br>
+      • Standard OpenAI
+    </div>
+
+    <div class="cfg-scan-row">
+      <label class="lbl" style="margin:0">Scan interval</label>
+      <select id="cfgInterval">
+        <option value="2000">Every 2 seconds</option>
+        <option value="3000" selected>Every 3 seconds</option>
+        <option value="5000">Every 5 seconds</option>
+        <option value="8000">Every 8 seconds</option>
+      </select>
+    </div>
+
+    <div id="cfgMsg"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btnTest">🔌 Test</button>
+      <button class="btn btn-primary"   id="btnSave">💾 Save</button>
+    </div>
+
+  </div>
+
+</div>
+<script src="sidepanel.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+/* CloudLabs v3 Overlay — transparent glass card, fixed positioning */
+
+:root {
+  --cl-blue:      #6366f1;
+  --cl-blue-g:    rgba(99,102,241,0.5);
+  --cl-warn:      #f59e0b;
+  --cl-danger:    #ef4444;
+  --cl-green:     #22c55e;
+  --cl-text:      #f0f4ff;
+  --cl-text2:     #a8b4d8;
+  --cl-text3:     #5a637d;
+  --cl-z0: 2147483600;
+  --cl-z1: 2147483635;
+  --cl-z2: 2147483645;
+}
+
+/* Container — covers full viewport, pointer-events none */
+#cl-root {
+  position: fixed !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: var(--cl-z0) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif !important;
+}
+
+/* Backdrop */
+.cl-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  background: transparent !important;
+  transition: background 0.35s ease !important;
+}
+.cl-backdrop.cl-on { background: rgba(0,0,0,0.42) !important; }
+
+/* Highlight ring — JS sets left/top/width/height every rAF */
+.cl-ring {
+  position: fixed !important;
+  border-radius: 8px !important;
+  border: 2px solid var(--cl-blue) !important;
+  background: rgba(99,102,241,0.06) !important;
+  pointer-events: none !important;
+  z-index: var(--cl-z1) !important;
+  opacity: 0 !important;
+  transition: opacity 0.25s ease !important;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.14), 0 0 16px var(--cl-blue-g), 0 0 40px rgba(99,102,241,0.18) !important;
+}
+.cl-ring.cl-on {
+  opacity: 1 !important;
+  animation: cl-pulse 2.2s ease-in-out infinite !important;
+}
+@keyframes cl-pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(99,102,241,0.14), 0 0 16px var(--cl-blue-g), 0 0 40px rgba(99,102,241,0.18); }
+  50%     { box-shadow: 0 0 0 6px rgba(99,102,241,0.07), 0 0 28px rgba(99,102,241,0.75), 0 0 60px rgba(99,102,241,0.25); }
+}
+
+/* ── GUIDANCE CARD ──────────────────────────────────────── */
+/* Glass morphism — semi-transparent, blurred, glowing border */
+.cl-card {
+  position: fixed !important;
+  width: 295px !important;
+  /* KEY: semi-transparent background */
+  background: rgba(14, 15, 28, 0.78) !important;
+  backdrop-filter: blur(18px) saturate(1.6) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.6) !important;
+  border: 1px solid rgba(99,102,241,0.28) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  z-index: var(--cl-z2) !important;
+  pointer-events: none !important;
+  color: var(--cl-text) !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  opacity: 0 !important;
+  transform: translateY(8px) scale(0.96) !important;
+  transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.16,1,0.3,1) !important;
+  /* JS sets left + top */
+}
+.cl-card.cl-on {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* Floating variant (element not found — bottom-right corner) */
+.cl-card--float {
+  position: fixed !important;
+  bottom: 80px !important;
+  right: 18px !important;
+  top: auto !important;
+  left: auto !important;
+}
+
+/* Issue variant — orange accent */
+.cl-card--issue { border-color: rgba(245,158,11,0.35) !important; }
+
+/* Accent bar */
+.cl-bar {
+  height: 3px !important;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1) !important;
+  background-size: 200% !important;
+  animation: cl-shimmer 2.5s linear infinite !important;
+}
+.cl-bar--warn {
+  background: linear-gradient(90deg, #f59e0b, #f97316, #f59e0b) !important;
+}
+@keyframes cl-shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+/* Inner padding */
+.cl-inner {
+  padding: 10px 13px 11px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+
+/* Top row */
+.cl-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+}
+
+/* Action chip */
+.cl-chip {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--cl-text2) !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  padding: 3px 9px !important;
+  border-radius: 999px !important;
+}
+.cl-chip--warn {
+  background: rgba(245,158,11,0.12) !important;
+  border-color: rgba(245,158,11,0.28) !important;
+  color: #fde68a !important;
+}
+
+/* Progress text */
+.cl-progress-txt {
+  font-size: 10.5px !important;
+  color: var(--cl-text3) !important;
+  text-align: right !important;
+  flex: 1 !important;
+}
+
+/* ── ISSUES BLOCK ───────────────────────────────────────── */
+.cl-issues {
+  background: rgba(239,68,68,0.10) !important;
+  border: 1px solid rgba(239,68,68,0.22) !important;
+  border-radius: 8px !important;
+  padding: 7px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+.cl-issue-row {
+  font-size: 11.5px !important;
+  color: #fca5a5 !important;
+  line-height: 1.45 !important;
+}
+
+/* ── FIX SUGGESTION ─────────────────────────────────────── */
+.cl-fix {
+  background: rgba(245,158,11,0.09) !important;
+  border: 1px solid rgba(245,158,11,0.22) !important;
+  border-radius: 8px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  color: #fde68a !important;
+  line-height: 1.55 !important;
+}
+
+/* ── GUIDANCE TEXT ──────────────────────────────────────── */
+.cl-guidance {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--cl-text) !important;
+  line-height: 1.6 !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+}
+
+/* ── GOAL COMPLETE SCREEN ───────────────────────────────── */
+.cl-complete {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: var(--cl-z2) !important;
+  opacity: 0 !important;
+  transition: opacity 0.4s ease !important;
+}
+.cl-complete.cl-on { opacity: 1 !important; }
+.cl-complete-inner {
+  background: rgba(14,15,28,0.90) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(34,197,94,0.3) !important;
+  border-radius: 18px !important;
+  padding: 40px 48px !important;
+  text-align: center !important;
+  max-width: 400px !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5) !important;
+  animation: cl-pop 0.45s cubic-bezier(0.16,1,0.3,1) !important;
+}
+@keyframes cl-pop { from{transform:scale(0.88);opacity:0} to{transform:scale(1);opacity:1} }
+.cl-complete-icon { font-size: 52px !important; margin-bottom: 14px !important; }
+.cl-complete-inner h2 { font-size: 22px !important; font-weight: 800 !important; color: #86efac !important; margin: 0 0 8px !important; }
+.cl-complete-inner p  { font-size: 14px !important; color: var(--cl-text) !important; margin: 0 0 6px !important; }
+.cl-complete-sub      { font-size: 12px !important; color: var(--cl-text3) !important; }
