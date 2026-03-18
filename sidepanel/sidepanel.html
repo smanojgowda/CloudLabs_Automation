@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CloudLabs AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="sidepanel.css"/>
+</head>
+<body>
+<div id="app">
+
+  <header class="hdr">
+    <div class="hdr-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="6" fill="url(#lg)"/>
+        <path d="M7 11.5L10 14.5L15 8.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="22" y2="22"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+    </div>
+    <div class="hdr-text">
+      <span class="hdr-name">CloudLabs AI</span>
+      <span class="hdr-sub">Spektra Systems</span>
+    </div>
+    <div class="hdr-right">
+      <div class="status-pill" id="statusPill"><span class="status-dot"></span><span id="statusTxt">Idle</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="guide"><span class="ti">🎯</span><span>Guide</span></button>
+    <button class="tab" data-tab="upload"><span class="ti">📋</span><span>Lab Guide</span></button>
+    <button class="tab" data-tab="chat"><span class="ti">💬</span><span>Ask AI</span></button>
+    <button class="tab" data-tab="config"><span class="ti">⚙️</span><span>Config</span></button>
+  </nav>
+
+  <!-- ═══ TAB 1: GUIDE ═══ -->
+  <div class="panel active" id="tab-guide">
+
+    <!-- Idle -->
+    <div id="guideIdle">
+      <p class="lbl">What do you want to do?</p>
+      <textarea id="goalInput" class="textarea"
+        placeholder="Describe your goal:&#10;&#10;• Deploy a simple virtual machine in Azure&#10;• Create a Resource Group in East US&#10;• Set up a Storage Account&#10;&#10;AI will generate step-by-step instructions. You control the pace — click Next when ready."></textarea>
+      <button class="btn btn-start" id="btnGenerate">✨ Generate Steps</button>
+    </div>
+
+    <!-- Active -->
+    <div id="guideActive" class="hidden">
+
+      <!-- Goal banner + Reset -->
+      <div class="goal-row">
+        <div class="goal-text" id="goalText"></div>
+        <button class="btn-icon-sm" id="btnReset" title="Start over">✕</button>
+      </div>
+
+      <!-- Step card -->
+      <div class="step-card" id="stepCard">
+        <div class="step-card-top">
+          <div class="step-badge" id="stepBadge">1</div>
+          <div class="step-action" id="stepAction">Click</div>
+          <div class="step-counter" id="stepCounter">Step 1 / 1</div>
+        </div>
+        <div class="step-title" id="stepTitle">Loading…</div>
+        <div class="step-desc"  id="stepDesc"></div>
+        <div class="step-progress">
+          <div class="step-track"><div class="step-fill" id="stepFill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Navigation — the CORE UX -->
+      <div class="nav-block">
+        <button class="nav-prev" id="btnPrev" disabled>← Previous</button>
+        <button class="nav-next" id="btnNext">Next →</button>
+      </div>
+
+      <div class="nav-hint">
+        Do the highlighted action, then click <strong>Next →</strong><br>
+        <span class="kbd-hint">← → keyboard shortcuts work too</span>
+      </div>
+
+      <!-- Error/issue area -->
+      <div class="issue-area hidden" id="issueArea">
+        <div class="issue-title">⚠️ Not found on this page</div>
+        <div class="issue-msg" id="issueMsg"></div>
+        <div class="issue-fix" id="issueFix"></div>
+        <button class="btn-retry" id="btnRetry">↺ Retry</button>
+      </div>
+
+      <!-- Steps overview (collapsible) -->
+      <details class="steps-overview">
+        <summary>All steps <span class="steps-badge" id="stepsBadge">0</span></summary>
+        <div class="steps-list" id="stepsList"></div>
+      </details>
+
+    </div>
+  </div>
+
+  <!-- ═══ TAB 2: LAB GUIDE UPLOAD ═══ -->
+  <div class="panel" id="tab-upload">
+    <p class="lbl">Upload a lab guide PDF or paste text</p>
+    <div class="src-tabs">
+      <button class="src-tab active" data-src="paste">📝 Paste</button>
+      <button class="src-tab" data-src="file">📄 File</button>
+    </div>
+    <div class="src-zone active" id="zone-paste">
+      <textarea id="guideText" class="textarea" style="min-height:110px"
+        placeholder="Paste lab guide text here…"></textarea>
+    </div>
+    <div class="src-zone" id="zone-file">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.docx"/>
+        <div class="dz-icon">📄</div>
+        <div class="dz-title" id="dropTitle">Drop file or click to browse</div>
+        <div class="dz-sub">.pdf  .txt  .md  .docx</div>
+      </div>
+    </div>
+    <div id="uploadMsg"></div>
+    <button class="btn btn-primary" id="btnParseGuide" disabled>✨ Parse Guide</button>
+  </div>
+
+  <!-- ═══ TAB 3: CHAT ═══ -->
+  <div class="panel" id="tab-chat">
+    <div class="chat-intro">Ask anything about the current step or Azure in general.</div>
+    <div class="chat-hist" id="chatHist">
+      <div class="bubble assistant"><div class="bubble-body">👋 Ask me anything — why a button is greyed out, what a field means, or where to find something.</div></div>
+    </div>
+    <div class="chat-row">
+      <textarea class="chat-inp" id="chatInp" placeholder="e.g. Why is Review + create greyed out?&#10;(Enter to send)"></textarea>
+      <button class="chat-send" id="chatSend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 4: CONFIG ═══ -->
+  <div class="panel" id="tab-config">
+    <p class="lbl">Backend Proxy</p>
+    <div class="cfg-group">
+      <div class="cfg-row"><label>Proxy URL</label><input type="url" id="cfgProxyUrl" placeholder="http://localhost:3000"/></div>
+    </div>
+    <div class="cfg-note">
+      💡 Run the backend proxy server (<code>cd backend && npm start</code>).<br>
+      API key and model are configured in <code>backend/.env</code>.
+    </div>
+    <div id="cfgMsg"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btnTest">🔌 Test</button>
+      <button class="btn btn-primary"   id="btnSave">💾 Save</button>
+    </div>
+  </div>
+
+</div>
+<script src="sidepanel.js"></script>
+</body>
+</html>

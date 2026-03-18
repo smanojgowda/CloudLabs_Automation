@@ -1,0 +1,138 @@
+/* CloudLabs v4.1 Overlay — glass card, white text, readable always */
+:root {
+  --cl-p:  #6366f1; --cl-pg: rgba(99,102,241,0.55);
+  --cl-w:  #f59e0b; --cl-d:  #ef4444;
+  --cl-z0: 2147483600; --cl-z1: 2147483635; --cl-z2: 2147483645;
+}
+
+#cl-root { position:fixed!important; inset:0!important; pointer-events:none!important; z-index:var(--cl-z0)!important; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif!important; }
+
+/* Backdrop — light so portal stays usable */
+.cl-backdrop { position:fixed!important; inset:0!important; background:transparent!important; transition:background .3s ease!important; }
+.cl-backdrop.cl-on { background:rgba(0,0,0,0.36)!important; }
+
+/* Highlight ring */
+.cl-ring {
+  position:fixed!important; border-radius:8px!important;
+  border:2.5px solid var(--cl-p)!important;
+  background:rgba(99,102,241,0.06)!important;
+  pointer-events:none!important; z-index:var(--cl-z1)!important;
+  opacity:0!important; transition:opacity .25s ease!important;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.14), 0 0 20px var(--cl-pg), 0 0 48px rgba(99,102,241,0.18)!important;
+}
+.cl-ring.cl-on { opacity:1!important; animation:cl-pulse 2.2s ease-in-out infinite!important; }
+@keyframes cl-pulse {
+  0%,100%{ box-shadow:0 0 0 4px rgba(99,102,241,0.14),0 0 20px var(--cl-pg),0 0 48px rgba(99,102,241,0.18); }
+  50%    { box-shadow:0 0 0 7px rgba(99,102,241,0.07),0 0 30px rgba(99,102,241,0.85),0 0 68px rgba(99,102,241,0.28); }
+}
+
+/* ── CARD — frosted glass ────────────────────────────── */
+/*
+  rgba(8,8,20,0.70) = 70% opaque dark — portal blurs through
+  backdrop-filter:blur(22px) = frosted glass effect
+  All text = pure white variants for readability at any opacity
+*/
+.cl-card {
+  position:fixed!important; width:285px!important;
+  background:rgba(8,8,20,0.70)!important;
+  backdrop-filter:blur(22px) saturate(1.8)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.8)!important;
+  border:1px solid rgba(255,255,255,0.12)!important;
+  border-top:2px solid rgba(99,102,241,0.55)!important;
+  border-radius:13px!important; overflow:hidden!important;
+  z-index:var(--cl-z2)!important; pointer-events:none!important;
+  color:#fff!important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)!important;
+  opacity:0!important; transform:scale(0.96) translateY(5px)!important;
+  transition:opacity .22s ease,transform .28s cubic-bezier(.16,1,.3,1)!important;
+}
+.cl-card.cl-on       { opacity:1!important; transform:scale(1) translateY(0)!important; }
+.cl-card--float      { position:fixed!important; bottom:76px!important; right:16px!important; top:auto!important; left:auto!important; }
+.cl-card--warn       { border-top-color:rgba(245,158,11,0.65)!important; }
+
+/* Shimmer bar */
+.cl-bar { height:3px!important; background:linear-gradient(90deg,#6366f1,#8b5cf6,#6366f1)!important; background-size:200%!important; animation:cl-sh 2.5s linear infinite!important; }
+.cl-bar--warn { background:linear-gradient(90deg,#f59e0b,#f97316,#f59e0b)!important; }
+@keyframes cl-sh { 0%{background-position:0%} 100%{background-position:200%} }
+
+.cl-inner { padding:9px 13px 10px!important; display:flex!important; flex-direction:column!important; gap:5px!important; }
+
+.cl-row { display:flex!important; align-items:center!important; gap:7px!important; }
+.cl-badge { display:flex!important; align-items:baseline!important; gap:2px!important; }
+.cl-n  { font-size:19px!important; font-weight:800!important; color:#a5b4fc!important; text-shadow:0 0 10px rgba(99,102,241,0.9)!important; line-height:1!important; }
+.cl-of { font-size:11px!important; color:rgba(255,255,255,0.38)!important; }
+.cl-chip { font-size:11px!important; font-weight:600!important; color:rgba(255,255,255,0.6)!important; background:rgba(255,255,255,0.09)!important; border:1px solid rgba(255,255,255,0.14)!important; padding:2px 8px!important; border-radius:999px!important; }
+.cl-pct  { margin-left:auto!important; font-size:10.5px!important; font-weight:700!important; color:#a5b4fc!important; }
+
+/* Title — always white, always readable */
+.cl-title { margin:0!important; font-size:13.5px!important; font-weight:700!important; color:#ffffff!important; line-height:1.3!important; text-shadow:0 1px 8px rgba(0,0,0,0.9)!important; }
+
+/* Description */
+.cl-desc { margin:0!important; font-size:12px!important; color:rgba(255,255,255,0.82)!important; line-height:1.6!important; text-shadow:0 1px 5px rgba(0,0,0,0.7)!important; }
+
+/* Hint */
+.cl-hint { font-size:11.5px!important; color:rgba(255,220,100,0.92)!important; background:rgba(245,158,11,0.11)!important; border:1px solid rgba(245,158,11,0.22)!important; border-radius:6px!important; padding:4px 8px!important; line-height:1.45!important; }
+
+/* Status strips */
+.cl-strip { font-size:11.5px!important; line-height:1.45!important; border-radius:6px!important; padding:5px 8px!important; display:flex!important; align-items:center!important; gap:6px!important; }
+.cl-strip--spin { color:rgba(255,255,255,0.55)!important; background:rgba(255,255,255,0.05)!important; font-style:italic!important; }
+.cl-strip--warn { color:#fca5a5!important; background:rgba(239,68,68,0.12)!important; border:1px solid rgba(239,68,68,0.22)!important; flex-wrap:wrap!important; }
+.cl-strip--warn strong { color:#fde68a!important; }
+
+/* Spinner */
+.cl-spinner { width:12px!important; height:12px!important; border:2px solid rgba(255,255,255,0.15)!important; border-top-color:#818cf8!important; border-radius:50%!important; animation:cl-spin .65s linear infinite!important; flex-shrink:0!important; }
+@keyframes cl-spin { to{transform:rotate(360deg)} }
+
+/* Progress */
+.cl-prog { margin-top:2px!important; }
+.cl-track { height:3px!important; background:rgba(255,255,255,0.10)!important; border-radius:999px!important; overflow:hidden!important; }
+.cl-fill  { height:100%!important; background:linear-gradient(90deg,#6366f1,#818cf8)!important; border-radius:999px!important; transition:width .5s ease!important; min-width:3px!important; }
+
+/* Footer */
+.cl-foot { margin:0!important; font-size:10px!important; color:rgba(255,255,255,0.28)!important; border-top:1px solid rgba(255,255,255,0.07)!important; padding-top:5px!important; font-style:italic!important; }
+
+/* Stop button in card header */
+.cl-stop-btn {
+  all: unset !important;
+  cursor: pointer !important;
+  width: 22px !important; height: 22px !important;
+  display: grid !important; place-items: center !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,0.07) !important;
+  color: rgba(255,255,255,0.40) !important;
+  font-size: 11px !important;
+  margin-left: auto !important;
+  transition: all .15s !important;
+  pointer-events: all !important;  /* card is pointer-events:none but btn needs clicks */
+  flex-shrink: 0 !important;
+}
+.cl-stop-btn:hover {
+  background: rgba(239,68,68,0.25) !important;
+  color: #fca5a5 !important;
+}
+
+/* Error fix suggestion */
+.cl-fix-row {
+  font-size: 11.5px !important;
+  color: #fde68a !important;
+  background: rgba(245,158,11,0.11) !important;
+  border: 1px solid rgba(245,158,11,0.22) !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+  line-height: 1.45 !important;
+}
+
+/* Scroll suggestion */
+.cl-scroll-row {
+  font-size: 11.5px !important;
+  color: #93c5fd !important;
+  background: rgba(59,130,246,0.10) !important;
+  border: 1px solid rgba(59,130,246,0.22) !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+  line-height: 1.45 !important;
+}
+
+/* Also pointer-events:all on cl-card so stop btn works */
+.cl-card { pointer-events: none !important; }
+.cl-stop-btn { pointer-events: all !important; }
